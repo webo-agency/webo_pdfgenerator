@@ -49,7 +49,9 @@ class webo_PdfGenerator extends Module implements WidgetInterface
     public function getWidgetVariables($hookName, array $configuration)
     {
         return [
-
+//            'generatePdf' => $this->context->link->getModuleLink('Webo_PdfGenerator', [], null, null, null, true),
+            'abc' => 'ok',
         ];
     }
+
 }
