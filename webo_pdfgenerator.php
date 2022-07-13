@@ -4,9 +4,8 @@ if(!defined('_PS_VERSION_')){
     exit;
 }
 
-use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
-class webo_PdfGenerator extends Module implements WidgetInterface
+class webo_PdfGenerator extends Module
 {
     public function __construct()
     {
@@ -29,29 +28,6 @@ class webo_PdfGenerator extends Module implements WidgetInterface
     public function uninstall()
     {
         return parent::uninstall();
-    }
-
-    public function renderWidget($hookName, array $configuration)
-    {
-
-        $this->smarty->assign($this->getWidgetVariables($hookName, $configuration));
-        try {
-            return $this->fetch('module:'. $this->name.'/views/templates/hook/displayPdfGenerator.tpl');
-        } catch (Exception $e)
-        {
-            if(strpos($e->getMessage(), 'displayPdfGenerator.tpl') !== false)
-            {
-                return $this->fetch('module:'. $this->name.'/views/templates/hook/displayPdfGenerator.tpl');
-            }
-        }
-    }
-
-    public function getWidgetVariables($hookName, array $configuration)
-    {
-        return [
-//            'generatePdf' => $this->context->link->getModuleLink('Webo_PdfGenerator', [], null, null, null, true),
-            'abc' => 'ok',
-        ];
     }
 
 }
