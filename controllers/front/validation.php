@@ -14,19 +14,20 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
     /** $html string */
     public $html;
 
-
     public function __construct() {
         parent::__construct();
         $this->name = "webo_pdfgenerator";
+        $this->pdfvariable = $this->context->smarty->assign(array('action' => Tools::getAllValues()));
         $this->html = $this->context->smarty->fetch('module:webo_pdfgenerator/views/templates/displayPdfGenerator.tpl', $this->name);
     }
 
     public function initContent(){
-//        if(Tools::isSubmit('action'))
-//        {
-//            return $this->generatePdfFile(Tools::getAllValues());
-//        }
-        $this->setTemplate(_PS_THEME_DIR_.'templates/errors/404.tpl');
+        if(Tools::getValue('action') == "getpdffromwebsite")
+        {
+            $this->generatePdfFile(Tools::getAllValues());
+        }else {
+            Tools::redirect("404");
+        }
         parent::initContent();
     }
 
@@ -36,12 +37,16 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
         $dompdf->loadHtml($this->html);
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
-        if($dompdf->stream($variable["pdfnamefile"].'.pdf'))
+        $dompdf->stream($variable["pdfnamefile"].'.pdf');
+        $dompdf->output(array('abc'=>'cba'));
+        if(!$dompdf->stream($variable["pdfnamefile"].'.pdf'))
         {
-            return true;
+            $this->ajaxRender(json_encode([
+                'success' => false,
+                'code' => '200',
+                'data' => "We cant't create pdf file"
+            ]));
         }
-        return false;
     }
-
 
 }
