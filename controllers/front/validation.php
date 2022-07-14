@@ -33,20 +33,26 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
 
     public function generatePdfFile(array $variable)
     {
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($this->html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-        $dompdf->stream($variable["pdfnamefile"].'.pdf');
-        $dompdf->output(array('abc'=>'cba'));
-        if(!$dompdf->stream($variable["pdfnamefile"].'.pdf'))
-        {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'code' => '200',
-                'data' => "We cant't create pdf file"
-            ]));
-        }
+//        $dpfcreate = new PDFGenerator();
+//        $dpfcreate->setFontForLang(Context::getContext()->language->iso_code);
+//        $dpfcreate->createContent("abcs");
+//        $dpfcreate->writePage();
+//        $dpfcreate->render('fhuiohfisa.pdf');
+
+//        $dompdf = new Dompdf();
+//        $dompdf->loadHtml($this->html);
+//        $dompdf->setPaper('A4', 'landscape');
+//        $dompdf->render();
+//        $dompdf->stream($variable["pdfnamefile"].'.pdf');
+//        $dompdf->output(array('abc'=>'cba'));
+//        if(!$dompdf->stream($variable["pdfnamefile"].'.pdf'))
+//        {
+//            $this->ajaxRender(json_encode([
+//                'success' => false,
+//                'code' => '200',
+//                'data' => "We cant't create pdf file"
+//            ]));
+//        }
     }
 
 }
