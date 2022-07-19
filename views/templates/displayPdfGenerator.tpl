@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="pl">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=iso-8859-2">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+       <style type="text/css">
+            body {
+                font-family: DejaVu Sans, Nomada Didone;
+            }
+        </style>
     </head>
     <body>
-{*        <img style="width: 75%;" src="{$action.images}">*}
 środekść
-        {$action.information}
+        {$action.blabla}
         abcde
     </body>
 </html>
