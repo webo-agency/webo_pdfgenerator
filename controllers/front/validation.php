@@ -6,6 +6,7 @@
  */
 
 use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontController
 {
@@ -18,41 +19,39 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
     public function __construct() {
         parent::__construct();
         $this->name = "webo_pdfgenerator";
-        $this->pdfvariable = $this->context->smarty->assign(array('action' => Tools::getAllValues()));
-        $this->html = $this->context->smarty->fetch('module:webo_pdfgenerator/views/templates/displayPdfGenerator.tpl', $this->name);
+        $this->pdfvariable = $this->context->smarty->assign(array('action' => Tools::getAllValues(), 'base_url' => _PS_BASE_URL_));
+        $this->html = $this->context->smarty->fetch('module:webo_pdfgenerator/views/templates/displayPdfGenerator.tpl');
     }
 
     public function setMedia()
     {
         parent::setMedia();
-        $this->addCSS($this->module->getPathUri().'views/css/NomadaDidone-Medium.eot');
+        $this->addCSS($this->module->getPathUri().'views/css/font.css');
     }
 
     public function initContent(){
+//        $this->setTemplate('module:webo_pdfgenerator/views/templates/displayPdfGenerator.tpl');
         if(Tools::getValue('action') == "getpdffromwebsite")
         {
-            $this->generatePdfFile(Tools::getAllValues());
+            $this->generatePdfFile(Tools::getAllValues(), $this->setTemplate('module:webo_pdfgenerator/views/templates/displayPdfGenerator.tpl'));
         }else {
             Tools::redirect("404");
         }
         parent::initContent();
     }
 
-    public function generatePdfFile(array $variable)
+    public function generatePdfFile(array $variable, $abc)
     {
-//        $dpfcreate = new PDFGenerator();
-//        $dpfcreate->setFontForLang(Context::getContext()->language->iso_code);
-//        $dpfcreate->createContent("abcs");
-//        $dpfcreate->writePage();
-//        $dpfcreate->render('fhuiohfisa.pdf');
-
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($this->html);
+        $options = new Options();
+        $options->setIsRemoteEnabled(true);
+        $options->setIsHtml5ParserEnabled(true);
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($this->html, 'UTF-8');
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
         $dompdf->stream($variable["pdfnamefile"].'.pdf');
-        $dompdf->output(array('abc'=>'cba'));
-        if($dompdf->stream($variable["pdfnamefile"].'.pdf'))
+        $dompdf->output();
+        if($dompdf->stream($variable["pdfnamefile"].'.pdf', ['Attachment' => false]))
         {
             $this->ajaxRender(json_encode([
                 'success' => false,
