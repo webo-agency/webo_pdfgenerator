@@ -44,7 +44,7 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
     {
         $options = new Options();
         $options->setIsRemoteEnabled(true);
-        $options->setIsHtml5ParserEnabled(true);
+        $options->setisHtml5ParserEnabled(true);
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($this->html, 'UTF-8');
         $dompdf->setPaper('A4', 'landscape');
