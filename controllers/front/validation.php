@@ -23,10 +23,11 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
     {
         parent::setMedia();
         $this->addCSS($this->module->getPathUri().'views/css/font.css');
+        $this->addCSS($this->module->getPathUri().'views/css/font.css');
     }
 
     public function initContent(){
-        if(Tools::getValue('action') == "getpdffromwebsite")
+        if(Tools::getValue('action') == "getpdffromwebsite" && Tools::getValue("pdfnamefile") && Tools::getValue("templatelocation"))
         {
             $this->generatePdfFile(Tools::getAllValues(), $this->setTemplate(Tools::getValue('templatelocation')));
         }else {
@@ -35,13 +36,13 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
         parent::initContent();
     }
 
-    public function generatePdfFile(array $variable, $abc)
+    public function generatePdfFile(array $variable, $html)
     {
         $options = new Options();
         $options->setIsRemoteEnabled(true);
         $options->setisHtml5ParserEnabled(true);
         $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($this->html, 'UTF-8');
+        $dompdf->loadHtml($html, 'UTF-8');
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
         $dompdf->stream($variable["pdfnamefile"].'.pdf');
