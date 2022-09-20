@@ -18,5 +18,8 @@
         </style>
     </head>
     <body>
+<!-- {$assets}views/img/background.svg
+<img src="{$assets}views/img/background.svg"  height="120" width="auto" style="width: auto; height: 120px; max-width: none; min-height: none; min-width: none;">
+-->
     </body>
 </html>

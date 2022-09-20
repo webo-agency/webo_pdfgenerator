@@ -16,7 +16,10 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
     public function __construct() {
         parent::__construct();
         $this->name = "webo_pdfgenerator";
-        $this->pdfvariable = $this->context->smarty->assign(array('action' => Tools::getAllValues()));
+        $this->pdfvariable = $this->context->smarty->assign(array(
+			'action' => Tools::getAllValues(),
+            'assets' => $this->module->getPathUri()
+		));
     }
 
     public function setMedia()
@@ -27,13 +30,19 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
     }
 
     public function initContent(){
+        parent::initContent();
         if(Tools::getValue('action') == "getpdffromwebsite" && Tools::getValue("pdfnamefile") && Tools::getValue("templatelocation"))
         {
-            $this->generatePdfFile(Tools::getAllValues(), $this->setTemplate(Tools::getValue('templatelocation')));
-        }else {
-            Tools::redirect("404");
+
+         if(Tools::getValue('templatelocation')){
+          $location = "module:webo_pdfgenerator/views/templates/displayPdfGenerator.tpl";
+         }
+
+            $this->setTemplate( $location );
+            $html = $this->context->smarty->fetch($location);
+
+            $this->generatePdfFile(Tools::getAllValues(), $html);
         }
-        parent::initContent();
     }
 
     public function generatePdfFile(array $variable, $html)
