@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pl">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
        <style type="text/css">
             body * {
                 font-family: "Nomada Didone"!important;
@@ -35,9 +35,9 @@
         </style>
     </head>
     <body>
-  <img src="{$background}" width="100%" height="100%"/>
-        <div id="image" class="absolute" style="top: 105px;left:45px">
-            <img src="{$action.picture}" height="460px" width="460px" style="max-width: none;min-height: auto;min-width: auto;"/>
+  		<img src="{$background}" width="100%" height="100%"/>
+        <div id="image" class="absolute" style="top: 115px;left:38px;background-color:#f8f8f8;height:451px;width:754px;overflow:hidden;">
+            <img src="{$action.picture}" height="451px" width="auto" style="display:inline-block;"/>
         </div>
     </body>
 </html>

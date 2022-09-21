@@ -5,9 +5,6 @@
  * Format expected: <ModuleClassName><FileName>ModuleFrontController
  */
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
-
 class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontController
 {
     /** $ajax bool */
@@ -34,9 +31,27 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
 		$valueFromCustomer = Tools::getAllValues();
 		$newData = $data;
 
-		$newData = str_replace("%title_1%", $valueFromCustomer['title'], $newData);
-		$newData = str_replace("%title_2%", $valueFromCustomer['title'], $newData);
-		$newData = str_replace("%title_3%", $valueFromCustomer['title'], $newData);
+
+		$font_data = base64_encode(file_get_contents(_PS_MODULE_DIR_ . $this->name . '/views/fonts/NomadaDidone-LightItalic.ttf'));
+		$newData = str_replace("%font_nomada_src%", 'data:font/truetype;charset=utf8;base64,' . $font_data, $newData);
+
+		$font_roboto_light_data = base64_encode(file_get_contents(_PS_MODULE_DIR_ . $this->name . '/views/fonts/Roboto-Light.ttf'));
+		$newData = str_replace("%font_roboto_light_src%", 'data:font/truetype;charset=utf8;base64,' . $font_data, $newData);
+
+		$font_roboto_medium_data = base64_encode(file_get_contents(_PS_MODULE_DIR_ . $this->name . '/views/fonts/Roboto-Medium.ttf'));
+		$newData = str_replace("%font_roboto_medium_src%", 'data:font/truetype;charset=utf8;base64,' . $font_data, $newData);
+
+		$line_length = 25;
+		$txt_line_1 = $this->extractUncutPhrase($valueFromCustomer['title'], $line_length);
+		$newData = str_replace("%title_1%", $txt_line_1, $newData);
+
+		$txt_line_2 = str_replace($txt_line_1, '', $valueFromCustomer['title']);
+		$txt_line_2 = $this->extractUncutPhrase($txt_line_2, $line_length);
+		$newData = str_replace("%title_2%", $txt_line_2, $newData);
+
+		$txt_line_3 = str_replace($txt_line_1, '', str_replace($txt_line_2, '', $valueFromCustomer['title']));
+		$txt_line_3 = $this->extractUncutPhrase($txt_line_3, $line_length);
+		$newData = str_replace("%title_3%", $txt_line_3, $newData);
 
 		$newData = str_replace("%x_value%", $valueFromCustomer['width'] . 'cm', $newData);
 		$newData = str_replace("%y_value%", $valueFromCustomer['height'] . 'cm', $newData);
@@ -57,6 +72,39 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
 
 		return $newData;
     }
+
+/**
+ * @param string $text
+ * @param int $limit
+ * @return string
+ */
+public function extractUncutPhrase($text, $limit)
+{
+    $delimiters = [',',' '];
+    $marks = ['!','?','.'];
+
+    $phrase = substr($text, 0, $limit);
+    $nextSymbol = substr($text, $limit, 1);
+
+
+    // Equal to original
+    if ($phrase == $text) {
+        return $phrase;
+    }
+    // If ends with delimiter
+    if (in_array($nextSymbol, $delimiters)) {
+        return $phrase;
+    }
+    // If ends with mark
+    if (in_array($nextSymbol, $marks)) {
+        return $phrase.$nextSymbol;
+    }
+
+    $parts = explode(' ', $phrase);
+    array_pop($parts);
+
+    return implode(' ', $parts); // Additioanally you may add ' ...' here.
+}
 
     public function setMedia()
     {
@@ -82,23 +130,14 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
 
     public function generatePdfFile(array $variable, $html)
     {
-        $options = new Options();
-        $options->setIsRemoteEnabled(true);
-        $options->setisHtml5ParserEnabled(true);
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html, 'UTF-8');
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-        $dompdf->stream($variable["pdfnamefile"].'.pdf');
-        $dompdf->output();
-        if($dompdf->stream($variable["pdfnamefile"].'.pdf', ['Attachment' => false]))
-        {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'code' => '200',
-                'data' => "We can't create pdf file"
-            ]));
-        }
+
+$mpdf = new \Mpdf\Mpdf([
+    'mode' => 'utf-8',
+    'format' => 'A4-L'
+]);
+$mpdf->WriteHTML($html);
+$mpdf->Output();
+
     }
 
 }

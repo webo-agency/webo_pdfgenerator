@@ -1,18 +1,23 @@
 {
-    "name": "prestashop/webo_pdfgenerator",
-    "type": "prestashop-module",
-    "license": "GPL-3.0-or-later",
-    "autoload": {
-        "psr-4": {
-            "Prestashop\\WeboPdfgenerator\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Webo.Agency"
-        }
-    ],
-    "require": {
-        "dompdf/dompdf": "^2.0"
+  "name": "prestashop/webo_pdfgenerator",
+  "type": "prestashop-module",
+  "license": "GPL-3.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "Prestashop\\WeboPdfgenerator\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "Webo.Agency"
+    }
+  ],
+  "require": {
+    "mpdf/mpdf": "7.0"
+  },
+  "config": {
+    "platform": {
+      "php": "7.2.34"
+    }
+  }
 }
