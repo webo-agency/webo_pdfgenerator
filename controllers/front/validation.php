@@ -18,8 +18,44 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
         $this->name = "webo_pdfgenerator";
         $this->pdfvariable = $this->context->smarty->assign(array(
 			'action' => Tools::getAllValues(),
-            'assets' => $this->module->getPathUri()
+             'background' => $this->encodeBase64ImagePath(_PS_MODULE_DIR_ . $this->name . '/views/img/background.svg')
 		));
+    }
+
+    public function encodeBase64ImagePath($path)
+    {
+		$type = pathinfo($path, PATHINFO_EXTENSION);
+		$data = file_get_contents($path);
+		$data = $this->fillData($data);
+		return 'data:image/svg+xml;charset=utf-8;base64,'. base64_encode($data);
+	}
+
+    public function fillData($data){
+		$valueFromCustomer = Tools::getAllValues();
+		$newData = $data;
+
+		$newData = str_replace("%title_1%", $valueFromCustomer['title'], $newData);
+		$newData = str_replace("%title_2%", $valueFromCustomer['title'], $newData);
+		$newData = str_replace("%title_3%", $valueFromCustomer['title'], $newData);
+
+		$newData = str_replace("%x_value%", $valueFromCustomer['width'] . 'cm', $newData);
+		$newData = str_replace("%y_value%", $valueFromCustomer['height'] . 'cm', $newData);
+
+		$newData = str_replace("%kolorystyka_title%", 'Kolorystyka', $newData);
+		$newData = str_replace("%kolorystyka_value%", $valueFromCustomer['color'], $newData);
+
+		$newData = str_replace("%rozmiar_title%", 'Rozmiar', $newData);
+		$newData = str_replace("%rozmiar_value%", $valueFromCustomer['size'], $newData);
+
+		$newData = str_replace("%standard_title%", 'Standard', $newData);
+		$newData = str_replace("%standard_value%", $valueFromCustomer['standard'], $newData);
+
+		$newData = str_replace("%tekstura_title%", 'Tekstura', $newData);
+		$newData = str_replace("%tekstura_value%", $valueFromCustomer['texture'], $newData);
+
+		$newData = str_replace("%image%", "black", $newData);
+
+		return $newData;
     }
 
     public function setMedia()
@@ -40,7 +76,6 @@ class webo_pdfgeneratorvalidationModuleFrontController extends ModuleFrontContro
 
             $this->setTemplate( $location );
             $html = $this->context->smarty->fetch($location);
-
             $this->generatePdfFile(Tools::getAllValues(), $html);
         }
     }
